@@ -15,6 +15,7 @@ jobs:
     name: Build wheels on ${{ matrix.os }} (${{ matrix.cibw_arch }})
     runs-on: ${{ matrix.os }}
     strategy:
+      fail-fast: false
       matrix:
         include:
           - os: ubuntu-22.04
@@ -45,6 +46,7 @@ jobs:
             python -m pip install "vtk==9.5.0"
           CIBW_BEFORE_BUILD_LINUX: >
             python -m pip install "vtk==9.5.0"
+            && python tools/prepare_linux_vtk_sdk.py --target-root /tmp/vmtk-vtk-sdk/linux-cp310-x86_64
           CIBW_REPAIR_WHEEL_COMMAND_MACOS: >
             DYLD_LIBRARY_PATH="$(python -c 'from pathlib import Path; import site, importlib.util, sys; spec=importlib.util.find_spec("vtkmodules"); candidates=[]; candidates += [Path(spec.origin).resolve().parent/".dylibs", Path(spec.origin).resolve().parent] if spec else []; [candidates.extend([Path(sp)/"vtkmodules"/".dylibs", Path(sp)/"vtkmodules", Path(sp)/"lib"]) for sp in site.getsitepackages()]; found=next((p for p in candidates if p.exists() and any(p.glob("libvtk*.dylib"))), None); print(found if found else ""); sys.exit(0 if found else "VTK dylib path not found")')"
             delocate-wheel --require-archs {delocate_archs} -w {dest_dir} -v {wheel}
@@ -56,6 +58,8 @@ jobs:
             CMAKE_ARGS="-DUSE_SYSTEM_VTK=ON"
           CIBW_ENVIRONMENT_LINUX: >
             CMAKE_ARGS="-DUSE_SYSTEM_VTK=ON"
+            VTK_DIR="/tmp/vmtk-vtk-sdk/linux-cp310-x86_64/vtk-9.5.0.data/headers/cmake"
+            CMAKE_PREFIX_PATH="/tmp/vmtk-vtk-sdk/linux-cp310-x86_64"
 
       - name: Upload wheels artifact
         uses: actions/upload-artifact@v4
