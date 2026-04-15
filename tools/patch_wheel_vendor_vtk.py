@@ -15,6 +15,7 @@ import hashlib
 import os
 import re
 import shutil
+import subprocess
 import sys
 import tempfile
 from pathlib import Path
@@ -58,6 +59,100 @@ def _find_vtk_sdk_payload(expected_py: tuple[int, int]) -> tuple[Path, Path] | N
                 return root, lib_root.relative_to(root)
 
     return None
+
+
+_X11_RUNTIME_LIBS = {
+    "libX11.so.6",
+    "libXcursor.so.1",
+    "libXext.so.6",
+    "libXfixes.so.3",
+    "libXi.so.6",
+    "libXrender.so.1",
+    "libXt.so.6",
+    "libxcb.so.1",
+}
+
+
+def _iter_linux_elf_binaries(root: Path):
+    for path in root.rglob("*"):
+        if not path.is_file():
+            continue
+        name = path.name
+        if name.endswith(".so") or ".so." in name:
+            yield path
+
+
+def _readelf_dynamic(path: Path) -> str:
+    try:
+        out = subprocess.run(
+            ["readelf", "-d", str(path)],
+            check=False,
+            capture_output=True,
+            text=True,
+        )
+    except FileNotFoundError:
+        return ""
+    if out.returncode != 0:
+        return ""
+    return out.stdout
+
+
+def _elf_needed(path: Path) -> set[str]:
+    dynamic = _readelf_dynamic(path)
+    if not dynamic:
+        return set()
+    return set(re.findall(r"Shared library: \[(.+?)\]", dynamic))
+
+
+def _elf_soname(path: Path) -> str:
+    dynamic = _readelf_dynamic(path)
+    if not dynamic:
+        return path.name
+    match = re.search(r"Library soname: \[(.+?)\]", dynamic)
+    if match:
+        return match.group(1)
+    return path.name
+
+
+def _prune_x11_dependent_binaries(bundle_dir: Path) -> list[Path]:
+    if not sys.platform.startswith("linux"):
+        return []
+
+    binaries = list(_iter_linux_elf_binaries(bundle_dir))
+    info: dict[Path, tuple[set[str], str]] = {}
+    for binary in binaries:
+        info[binary] = (_elf_needed(binary), _elf_soname(binary))
+
+    to_remove: list[Path] = [
+        binary
+        for binary, (needed, _) in info.items()
+        if needed & _X11_RUNTIME_LIBS
+    ]
+    removed: list[Path] = []
+    removed_set: set[Path] = set()
+    removed_sonames: set[str] = set()
+
+    while to_remove:
+        victim = to_remove.pop()
+        if victim in removed_set or not victim.exists():
+            continue
+
+        needed, soname = info.get(victim, (set(), victim.name))
+        victim.unlink()
+        removed.append(victim)
+        removed_set.add(victim)
+        removed_sonames.add(soname)
+
+        # Remove dependents that now require a pruned soname.
+        for candidate, (candidate_needed, _) in info.items():
+            if candidate in removed_set:
+                continue
+            if not candidate.exists():
+                continue
+            if candidate_needed & removed_sonames:
+                to_remove.append(candidate)
+
+    return removed
 
 
 def vendor_vtk_payload(root: Path, *, expected_py: tuple[int, int]) -> list[Path]:
@@ -104,6 +199,10 @@ def vendor_vtk_payload(root: Path, *, expected_py: tuple[int, int]) -> list[Path
         sdk_lib_dest.parent.mkdir(parents=True, exist_ok=True)
         shutil.copytree(sdk_root / sdk_rel_lib_dir, sdk_lib_dest)
         copied.append(sdk_lib_dest)
+
+        pruned = _prune_x11_dependent_binaries(bundle_dir)
+        for path in pruned:
+            print(f"[vendor-vtk] pruned x11-dependent binary: {path}")
         return copied
 
     vtk_py_dest = bundle_dir / "vtk.py"
@@ -129,6 +228,10 @@ def vendor_vtk_payload(root: Path, *, expected_py: tuple[int, int]) -> list[Path
             shutil.rmtree(dest)
         shutil.copytree(src, dest)
         copied.append(dest)
+
+    pruned = _prune_x11_dependent_binaries(bundle_dir)
+    for path in pruned:
+        print(f"[vendor-vtk] pruned x11-dependent binary: {path}")
 
     return copied
 

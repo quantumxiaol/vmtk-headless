@@ -100,6 +100,18 @@ if(DEFINED SKBUILD)
   endif()
 endif()
 
+# Linux VTK wheels are built with the old libstdc++ ABI. Match it in SKBUILD
+# source/wheel builds so vtkvmtk extensions load against vtk==9.5.* reliably.
+if(DEFINED SKBUILD AND UNIX AND NOT APPLE)
+  set(
+    VMTK_GLIBCXX_USE_CXX11_ABI
+    "0"
+    CACHE STRING
+    "Value for _GLIBCXX_USE_CXX11_ABI when building Linux wheels/source installs."
+  )
+  add_compile_definitions(_GLIBCXX_USE_CXX11_ABI=${VMTK_GLIBCXX_USE_CXX11_ABI})
+endif()
+
 #-----------------------------------------------------------------------------
 # ITK setup
 option( USE_SYSTEM_ITK
