@@ -15,6 +15,7 @@
 ##       University at Buffalo
 
 import pytest
+import os
 import vmtk.vmtksurfacecapper as surfacecapper
 
 
@@ -25,6 +26,17 @@ def aorta_surface_open_ends(input_datadir):
     reader.InputFileName = os.path.join(input_datadir, 'aorta-surface-open-ends.stl')
     reader.Execute()
     return reader.Surface
+
+
+def test_simple_method_noninteractive_smoke(aorta_surface_open_ends):
+    capper = surfacecapper.vmtkSurfaceCapper()
+    capper.Surface = aorta_surface_open_ends
+    capper.Method = 'simple'
+    capper.Interactive = 0
+    capper.Execute()
+
+    assert capper.Surface.GetNumberOfPoints() == 6068
+    assert capper.Surface.GetNumberOfCells() == 12132
 
 
 @pytest.mark.skip(reason='cannot use this non-interactively')

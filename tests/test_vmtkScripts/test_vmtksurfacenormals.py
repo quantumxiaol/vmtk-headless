@@ -20,13 +20,22 @@ import vmtk.vmtksurfacenormals as normals
 
 
 vtk_version = tuple(int(part) for part in vtk.vtkVersion.GetVTKVersion().split('.')[:2])
-if vtk_version >= (9, 5):
-    pytest.skip(
-        "Surface normal orientation differs across VTK 9.5+ builds.",
-        allow_module_level=True,
-    )
 
 
+def test_normals_smoke(aorta_surface):
+    normer = normals.vmtkSurfaceNormals()
+    normer.Surface = aorta_surface
+    normer.Execute()
+
+    normals_array = normer.Surface.GetPointData().GetArray('Normals')
+    assert normals_array is not None
+    assert normals_array.GetNumberOfTuples() == normer.Surface.GetNumberOfPoints()
+
+
+@pytest.mark.skipif(
+    vtk_version >= (9, 5),
+    reason='Surface normal orientation differs across VTK 9.5+ builds.',
+)
 def test_default_params(aorta_surface, compare_surfaces):
     name = __name__ + '_test_default_params.vtp'
     normer = normals.vmtkSurfaceNormals()
@@ -36,6 +45,10 @@ def test_default_params(aorta_surface, compare_surfaces):
     assert compare_surfaces(normer.Surface, name, method='addpointarray', arrayname='Normals') == True
 
 
+@pytest.mark.skipif(
+    vtk_version >= (9, 5),
+    reason='Surface normal orientation differs across VTK 9.5+ builds.',
+)
 def test_no_autoorient_normals(aorta_surface, compare_surfaces):
     name = __name__ + '_test_no_autoorient_normals.vtp'
     normer = normals.vmtkSurfaceNormals()
@@ -46,6 +59,10 @@ def test_no_autoorient_normals(aorta_surface, compare_surfaces):
     assert compare_surfaces(normer.Surface, name, method='addpointarray', arrayname='Normals') == True
 
 
+@pytest.mark.skipif(
+    vtk_version >= (9, 5),
+    reason='Surface normal orientation differs across VTK 9.5+ builds.',
+)
 def test_no_consistency(aorta_surface, compare_surfaces):
     name = __name__ + '_test_no_consistency.vtp'
     normer = normals.vmtkSurfaceNormals()

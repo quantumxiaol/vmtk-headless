@@ -15,7 +15,12 @@
 ##       University at Buffalo
 
 import pytest
+from vmtk import vtkvmtk
 import vmtk.vmtkimagesmoothing as imagesmoothing
+
+HAS_ANISOTROPIC_DIFFUSION = hasattr(
+    vtkvmtk, 'vtkvmtkAnisotropicDiffusionImageFilter'
+)
 
 
 # with default gauss smoothig
@@ -52,6 +57,10 @@ def test_lower_radius_factor(aorta_image, compare_images):
     assert compare_images(smoother.Image, name) == True
 
 
+@pytest.mark.skipif(
+    not HAS_ANISOTROPIC_DIFFUSION,
+    reason='Anisotropic diffusion wrapper support is disabled in this build.',
+)
 def test_anisotropic_smoothing_default_params(aorta_image, compare_images, write_image):
     name = __name__ + '_test_anisotropic_smoothing_default_params.mha'
     smoother = imagesmoothing.vmtkImageSmoothing()
@@ -63,6 +72,10 @@ def test_anisotropic_smoothing_default_params(aorta_image, compare_images, write
     assert compare_images(smoother.Image, name) == True
 
 
+@pytest.mark.skipif(
+    not HAS_ANISOTROPIC_DIFFUSION,
+    reason='Anisotropic diffusion wrapper support is disabled in this build.',
+)
 @pytest.mark.parametrize("TimeStep,AutoCalculateTimeStep,Conductance,NumberOfIterations,paramid", [
     (0.0450, 0, 1.0, 5, '0'),
     (0.0450, 1, 1.0, 5, '1'),

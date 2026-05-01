@@ -338,19 +338,46 @@ uv run python tools/smoke_test_install.py
 uv run pytest -q tests/test_headless_install.py
 ```
 
+Headless core data suite:
+
+```bash
+git submodule update --init --depth 1 --checkout tests/vmtk-test-data
+uv run python tools/run_headless_core_tests.py
+```
+
 CI uses two levels of tests:
 
 - `Test pip install git+` runs on push and pull request. It installs the package
   from `git+file://`, runs `tools/smoke_test_install.py`, and runs
   `tests/test_headless_install.py`.
-- `Test headless data subset` is a heavier workflow that fetches the upstream
-  `tests/vmtk-test-data` submodule, installs the current checkout, and runs a
-  curated headless-compatible data subset. It can be started manually from
-  GitHub Actions when you want a deeper data-path check.
+- `Test headless core data suite` is a heavier workflow that fetches the
+  upstream `tests/vmtk-test-data` submodule, installs the current checkout, and
+  runs the manifest in `tests/headless_core_tests.txt`. It can be started
+  manually from GitHub Actions when you want a deeper data-path check.
 
-The full upstream pytest tree is still present, but it is not the default
-release gate for this fork. Many upstream tests require the large
-`tests/vmtk-test-data` submodule or disabled GUI/segmentation features.
+The headless core manifest is the release gate for data-path behavior. It
+includes:
+
+- PypeS parsing/execution and build-configuration checks.
+- `vtk`, `vmtk`, `vmtkscripts`, and native `vtkvmtk` import checks.
+- Centerline extraction and centerline attributes/geometry/interpolation/
+  modelling/resampling/smoothing/network tests.
+- Branch and bifurcation geometry, metrics, profiles, reference systems, and
+  vectors.
+- VTK-only image operations: binarize, cast, compare, compose, initialization
+  modes that do not require disabled wrappers, image reader fallback,
+  shift/scale, Gaussian smoothing, and marching cubes.
+- Mesh/network conversion and extraction tests.
+- Surface processing: append, boolean operations, capping smoke, cell-to-point
+  data, connectivity, decimation, kite removal, mass properties, modelling,
+  normals smoke, reader, scaling, smoothing, subdivision, and surface-to-binary
+  image.
+
+The full upstream pytest tree is still present, but it is not the default gate
+for this fork. Tests are intentionally left out of the headless manifest when
+they require disabled rendering/GUI wrappers, ITK-backed segmentation wrappers,
+interactive viewer workflows, DICOM/NRRD ITK orientation behavior, or native
+paths quarantined for VTK 9.5+ instability.
 
 ## Upstream VMTK
 

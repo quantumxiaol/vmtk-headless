@@ -43,11 +43,11 @@ def test_set_argument_string_five_args():
     assert pipe.Arguments == ['vmtkimagereader', '--help', '0123', 'vmtkimageviewer', 'fixit']
 
 
-@pytest.mark.xfail(raises=RuntimeError)
 def test_fail_set_argument_string_nonmatching_quote():
     pipe = pype.Pype()
     arg_string = 'vmtkimagereader --help"'
-    pipe.SetArgumentsString(arg_string)
+    with pytest.raises(RuntimeError):
+        pipe.SetArgumentsString(arg_string)
 
 
 def test_parse_arguments_one_function():

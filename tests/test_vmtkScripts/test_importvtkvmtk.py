@@ -5,7 +5,6 @@ import pytest
 
 
 CORE_WRAPPER_ATTRIBUTES = [
-    'vtk',
     'vtkvmtkMath',
     'vtkvmtkPolyDataCenterlines',
     'vtkvmtkCenterlineAttributesFilter',
@@ -14,6 +13,12 @@ CORE_WRAPPER_ATTRIBUTES = [
     'vtkvmtkPolyDataNetworkExtraction',
     'vtkvmtkPolyDataBoundaryExtractor',
 ]
+
+
+def test_import_vtk_runtime():
+    import vtk
+
+    assert isinstance(vtk.vtkVersion.GetVTKVersion(), str)
 
 
 def test_import_vtkvmtk_core_symbols():

@@ -1,0 +1,65 @@
+# Headless CI data suite.
+#
+# This manifest lists tests that should gate the vmtk-headless package:
+# core imports, PypeS, centerline/branch/bifurcation algorithms, VTK-only
+# image processing, mesh/network utilities, and surface processing.
+#
+# Excluded from this manifest:
+# - GUI/rendering and interactive viewer tests.
+# - ITK/segmentation tests for wrappers intentionally disabled in this build.
+# - Native-crash/unstable regression tests quarantined for VTK 9.5+.
+
+tests/test_PypeS/test_build_configuration.py
+tests/test_PypeS/test_pype.py
+tests/test_PypeS/test_pypes.py
+
+tests/test_vmtkScripts/test_importvmtkscripts.py
+tests/test_vmtkScripts/test_importvtkvmtk.py
+
+tests/test_vmtkScripts/test_vmtkbifurcationprofiles.py
+tests/test_vmtkScripts/test_vmtkbifurcationreferencesystems.py
+tests/test_vmtkScripts/test_vmtkbifurcationvectors.py
+
+tests/test_vmtkScripts/test_vmtkbranchclipper.py
+tests/test_vmtkScripts/test_vmtkbranchextractor.py
+tests/test_vmtkScripts/test_vmtkbranchgeometry.py
+tests/test_vmtkScripts/test_vmtkbranchmetrics.py
+
+tests/test_vmtkScripts/test_vmtkcenterlineattributes.py
+tests/test_vmtkScripts/test_vmtkcenterlinegeometry.py
+tests/test_vmtkScripts/test_vmtkcenterlineinterpolation.py
+tests/test_vmtkScripts/test_vmtkcenterlinemodeller.py
+tests/test_vmtkScripts/test_vmtkcenterlineoffsetattributes.py
+tests/test_vmtkScripts/test_vmtkcenterlineresampling.py
+tests/test_vmtkScripts/test_vmtkcenterlines.py
+tests/test_vmtkScripts/test_vmtkcenterlinesmoothing.py
+tests/test_vmtkScripts/test_vmtkcenterlinesnetwork.py
+
+tests/test_vmtkScripts/test_vmtkimagebinarize.py
+tests/test_vmtkScripts/test_vmtkimagecast.py
+tests/test_vmtkScripts/test_vmtkimagecompare.py
+tests/test_vmtkScripts/test_vmtkimagecompose.py
+tests/test_vmtkScripts/test_vmtkimageinitialization.py
+tests/test_vmtkScripts/test_vmtkimagereader.py
+tests/test_vmtkScripts/test_vmtkimageshiftscale.py
+tests/test_vmtkScripts/test_vmtkimagesmoother.py
+tests/test_vmtkScripts/test_vmtkmarchingcubes.py
+
+tests/test_vmtkScripts/test_vmtkmeshtonumpy.py
+tests/test_vmtkScripts/test_vmtknetworkextraction.py
+
+tests/test_vmtkScripts/test_vmtksurfaceappend.py
+tests/test_vmtkScripts/test_vmtksurfacebooleanoperation.py
+tests/test_vmtkScripts/test_vmtksurfacecapper.py
+tests/test_vmtkScripts/test_vmtksurfacecelldatatopointdata.py
+tests/test_vmtkScripts/test_vmtksurfaceconnectivity.py
+tests/test_vmtkScripts/test_vmtksurfacedecimation.py
+tests/test_vmtkScripts/test_vmtksurfacekiteremoval.py
+tests/test_vmtkScripts/test_vmtksurfacemassproperties.py
+tests/test_vmtkScripts/test_vmtksurfacemodeller.py
+tests/test_vmtkScripts/test_vmtksurfacenormals.py
+tests/test_vmtkScripts/test_vmtksurfacereader.py
+tests/test_vmtkScripts/test_vmtksurfacescaling.py
+tests/test_vmtkScripts/test_vmtksurfacesmoothing.py
+tests/test_vmtkScripts/test_vmtksurfacesubdivision.py
+tests/test_vmtkScripts/test_vmtksurfacetobinaryimage.py

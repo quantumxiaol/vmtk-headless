@@ -45,12 +45,10 @@ VTK_VERSION = tuple(int(part) for part in vtk.vtkVersion.GetVTKVersion().split('
 SEGMENTATION_TEST_MODULES = {
     'test_vmtkcenterlineimage.py',
     'test_vmtkimagefeatures.py',
-    'test_vmtkimageinitialization.py',
     'test_vmtkimagemorphology.py',
     'test_vmtkimagenormalize.py',
     'test_vmtkimageobjectenhancement.py',
     'test_vmtkimageotsuthresholds.py',
-    'test_vmtkimagesmoother.py',
     'test_vmtkimagevesselenhancement.py',
     'test_vmtklevelsetsegmentation.py',
 }
@@ -61,7 +59,6 @@ RENDERING_TEST_MODULES = {
 
 ITK_DEPENDENT_TEST_MODULES = {
     'test_vmtkimagevoiselector.py',
-    'test_vmtkmarchingcubes.py',
     'test_vmtksurfacetransformtoras.py',
 }
 
