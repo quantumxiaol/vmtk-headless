@@ -7,17 +7,17 @@ requires = [
 build-backend = "scikit_build_core.build"
 
 [project]
-name = "vmtk"
+name = "vmtk-headless"
 version = "1.5.0"
-description = "Vascular Modeling Toolkit (VMTK)"
+description = "Vascular Modeling Toolkit (VMTK),no GUI,build for pypi(not official)"
 readme = { file = "README.md", content-type = "text/markdown" }
 requires-python = ">=3.10"
 license = { file = "LICENSE" }
 authors = [
-  { name = "Luca Antiga" },
+  { name = "quantumxiaol" },
 ]
 maintainers = [
-  { name = "VMTK maintainers" },
+  { name = "quantumxiaol" },
 ]
 keywords = [
   "vascular",
@@ -60,7 +60,7 @@ cmake.version = ">=3.21"
 build.verbose = true
 
 [tool.scikit-build.wheel]
-packages = []
+packages = ["vmtk"]
 
 [tool.scikit-build.cmake.define]
 VMTK_USE_SUPERBUILD = "OFF"

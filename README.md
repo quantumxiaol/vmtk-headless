@@ -25,7 +25,7 @@ Tutorials, development instructions, and the general information is available at
 
 ### Python package build from source (`pip` / `uv`)
 
-`pip install git+https://github.com/vmtk/vmtk.git` now uses a PEP517 build
+`pip install git+https://github.com/quantumxiaol/vmtk.git` now uses a PEP517 build
 backend (`scikit-build-core`) and compiles VMTK C/C++ extensions during
 installation.
 
@@ -43,7 +43,7 @@ Notes:
   submodule by default (`.gitmodules` uses `update = none`), avoiding
   unnecessary test-data checkout during package install.
 - If you intentionally build against a custom/system VTK SDK, pass `VTK_DIR`:
-  `pip install "vmtk @ git+https://github.com/vmtk/vmtk.git" --config-settings=cmake.define.VTK_DIR=/path/to/vtk/lib/cmake/vtk-9.5`
+  `pip install "vmtk @ git+https://github.com/quantumxiaol/vmtk.git" --config-settings=cmake.define.VTK_DIR=/path/to/vtk/lib/cmake/vtk-9.5`
 - CI wheel builds (`cibuildwheel`) pin VTK `9.5.0` and use a matching SDK
   payload to keep build/runtime toolchains aligned.
 
