@@ -30,7 +30,10 @@ jobs:
 
       - name: Install from git URL
         run: |
-          python -m pip install "vmtk @ git+file://${GITHUB_WORKSPACE}"
+          python -m pip install "vmtk-headless[test] @ git+file://${GITHUB_WORKSPACE}"
 
       - name: Run smoke test
         run: python tools/smoke_test_install.py
+
+      - name: Run pytest install smoke tests
+        run: python -m pytest -q tests/test_headless_install.py

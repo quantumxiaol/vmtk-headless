@@ -11,7 +11,7 @@ name = "vmtk-headless"
 version = "1.5.0"
 description = "Vascular Modeling Toolkit (VMTK),no GUI,build for pypi(not official)"
 readme = { file = "README.md", content-type = "text/markdown" }
-requires-python = ">=3.10"
+requires-python = "==3.10.*"
 license = { file = "LICENSE" }
 authors = [
   { name = "quantumxiaol" },
@@ -52,8 +52,8 @@ test = ["pytest>=8.0"]
 [project.urls]
 Homepage = "https://www.vmtk.org"
 Documentation = "https://www.vmtk.org/documentation/"
-Repository = "https://github.com/vmtk/vmtk"
-Issues = "https://github.com/vmtk/vmtk/issues"
+Repository = "https://github.com/quantumxiaol/vmtk-headless"
+Issues = "https://github.com/quantumxiaol/vmtk-headless/issues"
 
 [tool.scikit-build]
 cmake.version = ">=3.21"
