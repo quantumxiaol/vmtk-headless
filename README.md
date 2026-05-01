@@ -344,9 +344,9 @@ CI uses two levels of tests:
   from `git+file://`, runs `tools/smoke_test_install.py`, and runs
   `tests/test_headless_install.py`.
 - `Test headless data subset` is a heavier workflow that fetches the upstream
-  `tests/vmtk-test-data` submodule and runs a curated headless-compatible data
-  subset. It can be started manually from GitHub Actions when you want a deeper
-  data-path check.
+  `tests/vmtk-test-data` submodule, installs the current checkout, and runs a
+  curated headless-compatible data subset. It can be started manually from
+  GitHub Actions when you want a deeper data-path check.
 
 The full upstream pytest tree is still present, but it is not the default
 release gate for this fork. Many upstream tests require the large
